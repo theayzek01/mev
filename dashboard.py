@@ -1,0 +1,238 @@
+#!/usr/bin/env python3
+"""mev kokpit: tek dosya, tarayicida calisan kontrol paneli (stdlib-only).
+Kullanim: python dashboard.py  -> tarayici otomatik acilir (http://127.0.0.1:8080)
+"""
+import json, os, sys, time, webbrowser, threading
+from http.server import BaseHTTPRequestHandler, HTTPServer
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import mev as J
+import mcp_server as M
+
+HOST, PORT = "127.0.0.1", 47921
+MEV = os.path.dirname(os.path.abspath(__file__))
+RYUKO = r"C:\Users\theay\OneDrive\Desktop\Ryuko-AI"
+ROOT_DEFAULT = RYUKO if os.path.isdir(RYUKO) else MEV
+
+PAGE = """<!DOCTYPE html><html lang="tr"><head><meta charset="UTF-8">
+<title>MEV</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:#1E0A08;color:#F3E6E1;font-family:"Segoe UI",system-ui,sans-serif;min-width:1280px;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+header{display:flex;align-items:baseline;gap:14px;padding:14px 26px;background:#1E0A08}
+.logo{font-family:Georgia,'Times New Roman',serif;font-size:26px;font-weight:700;color:#F3E6E1;letter-spacing:1px}
+.logo em{font-style:italic;color:#E8A07E}
+.badge{margin-left:auto;font-size:11px;color:#B08D87;border:1px solid rgba(232,160,126,.25);border-radius:20px;padding:2px 10px}
+#clock{color:#B08D87;font-size:12px}
+main{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;padding:14px 26px;flex:1;min-height:0;background:#1E0A08}
+.panel{position:relative;background:#2A1210;border:1px solid rgba(232,160,126,.12);border-radius:14px;padding:18px;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.num{position:absolute;top:6px;right:14px;font-family:Georgia,serif;font-size:44px;color:rgba(232,160,126,.10);line-height:1;pointer-events:none}
+.panel h2{font-family:Georgia,serif;font-size:21px;font-weight:700;color:#E8A07E;margin-bottom:2px}
+.sub{font-size:12px;color:#B08D87;margin-bottom:8px}
+label{font-size:11px;color:#B08D87;display:block;margin:10px 0 4px;letter-spacing:.5px}
+textarea,input[type=text]{width:100%;background:rgba(74,21,18,.25);color:#F3E6E1;border:1px solid rgba(232,160,126,.15);border-radius:8px;padding:9px;font-family:inherit;font-size:13px;resize:vertical}
+textarea::placeholder,input::placeholder{color:#9A6F69}
+textarea:focus,input:focus{outline:none;box-shadow:0 0 0 1px #E8A07E}
+button{display:flex;align-items:center;justify-content:center;gap:8px;background:transparent;color:#E8A07E;border:1px solid rgba(232,160,126,.35);border-radius:10px;padding:9px 14px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;margin-top:12px}
+.panel.active button.act{background:#E8A07E;color:#4A1512;border-color:#E8A07E;font-weight:700}
+.panel.active button.act:hover{background:#f0b48f}
+button:hover{border-color:#E8A07E}
+kbd{font-family:inherit;font-size:11px;background:rgba(0,0,0,.25);border:1px solid rgba(232,160,126,.3);border-radius:5px;padding:1px 7px}
+.panel.active kbd{background:rgba(74,21,18,.2);border-color:rgba(74,21,18,.35)}
+.preset{background:none;border:none;color:#B08D87;padding:3px 8px;font-size:11px;margin:4px 4px 0 0}
+.preset:hover{color:#E8A07E}
+.out{margin-top:12px;font-size:13px;overflow:auto;flex:1;min-height:0}
+.pick{color:#E8A07E;font-weight:700}
+.bar{height:8px;background:rgba(74,21,18,.4);border-radius:4px;margin:3px 0 8px;overflow:hidden}
+.bar i{display:block;height:100%;background:#7fb069}
+.dim{color:#B08D87}.amber{color:#E8A07E}.green{color:#7fb069}.red{color:#e07a6a}
+.ms{font-weight:700;color:#E8A07E;background:rgba(74,21,18,.55);border-radius:6px;padding:1px 8px;white-space:nowrap}
+.row{padding:6px 0;border-bottom:1px solid rgba(232,160,126,.07)}
+.mono{font-family:"Cascadia Code",Consolas,monospace;font-size:12px}
+#log{background:#241012;height:110px;flex-shrink:0;overflow:auto;padding:10px 26px;font-size:12px;color:#B08D87;font-family:"Cascadia Code",Consolas,monospace}
+#log .t{color:#5c3a36;margin-right:8px}
+footer{padding:6px 26px;font-size:11px;color:#5c3a36;flex-shrink:0;background:#1E0A08}
+.tag{font-size:12px;color:#B08D87}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:rgba(232,160,126,.25);border-radius:6px}
+::-webkit-scrollbar-track{background:transparent}
+.detay{flex-shrink:0;padding:4px 26px 10px;font-size:12px;color:#B08D87;background:#1E0A08}
+.detay summary{cursor:pointer;color:#B08D87}
+.detay-ic{padding:8px 0 2px;line-height:1.8}
+.detay-ic b{color:#E8A07E}
+select{background:rgba(74,21,18,.25);color:#F3E6E1;border:1px solid rgba(232,160,126,.15);border-radius:8px;padding:7px;font-family:inherit}
+pre{background:#241012;border:1px solid rgba(232,160,126,.12);border-radius:8px;padding:10px;font-size:11px;overflow:auto;white-space:pre;margin-top:6px;font-family:"Cascadia Code",Consolas,monospace;color:#F3E6E1}
+.copy{background:none;border:none;color:#B08D87;padding:2px 8px;font-size:11px;margin-top:6px}
+.tabbar{display:flex;align-items:center;margin-top:10px;font-size:11px;color:#B08D87}
+.tabbar .file{font-family:"Cascadia Code",Consolas,monospace}
+.tabbar button{margin:0 0 0 auto;padding:3px 7px;border:none;display:flex}
+.tabbar button:hover{border:none;color:#E8A07E}
+</style></head><body>
+<header><div class="logo">ME<em>V</em></div><div class="tag">Yazıyı doğru birime dağıtır, dosyayı bulur.</div><div class="badge">v1.0</div><div id="clock"></div></header>
+<main>
+<div class="panel"><span class="num">01</span><h2>Karar Motoru</h2><div class="sub">iOS signing ve derleme kurallarını doğrula.</div>
+<label>DURUM (state)</label><textarea id="d_state" rows="3">Release build iOS tarafında signing hatası veriyor, archive alınamıyor.</textarea>
+<label>SORU TİPİ</label><select id="d_type"><option value="choice">choice — seçenekten biri</option><option value="noul">noul — evet/hayır olasılığı</option><option value="score">score — dereceli skala</option></select>
+<label>SEÇENEKLER (etiket: açıklama, satır başı)</label><textarea id="d_crit" rows="4">mobile: flutter dart ios android build gradle xcode
+backend: api firebase firestore crash kural
+design: ui tema renk ekran kontrast</textarea>
+<button class="act" onclick="runDecide()">Çalıştır <kbd>&#8963;&#9166;</kbd></button>
+<div><button class="preset" onclick="preD(0)">ios build</button><button class="preset" onclick="preD(1)">firestore</button><button class="preset" onclick="preD(2)">tema</button></div>
+<div class="out" id="d_out"><span class="dim">hazır.</span></div></div>
+<div class="panel"><span class="num">02</span><h2>Dosya Bul</h2><div class="sub">Büyük Flutter reposunda niyetle ara.</div>
+<label>SORGU</label><input type="text" id="s_q" value="checkout bottom sheet">
+<label>KÖK</label><input type="text" id="s_root" value="__ROOT__">
+<label>MOD</label><select id="s_mode"><option value="semantic">semantic — niyetle</option><option value="exact">exact — birebir</option></select>
+<button class="act" onclick="runSfind()">Tara <kbd>&#8963;&#9166;</kbd></button>
+<div><button class="preset" onclick="preS('checkout bottom sheet')">checkout</button><button class="preset" onclick="preS('go_router redirect')">go_router</button><button class="preset" onclick="preS('riverpod provider')">riverpod</button></div>
+<div class="out" id="s_out"><span class="dim">hazır.</span></div></div>
+<div class="panel"><span class="num">03</span><h2>Dil</h2><div class="sub">Metnin dilini ve kanalını tespit et.</div>
+<label>METİN</label><input type="text" id="r_t" value="fatura iade istiyorum">
+<button class="act" onclick="runRoute()">Tespit Et <kbd>&#8963;&#9166;</kbd></button>
+<div class="out" id="r_out"><span class="dim">hazır.</span></div>
+<div class="out" id="st_out" style="padding-top:8px"><span class="dim">sistem yükleniyor…</span></div></div>
+<div class="panel"><span class="num">04</span><h2>Agent</h2><div class="sub">Kodlamada kullanım: bağlantı ve talimat.</div>
+<div class="tabbar"><span class="file">opencode.json</span><button onclick="copyTxt('a_cfg')" title="Kopyala"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
+<pre id="a_cfg">{
+  "mcp": {
+    "mev": {
+      "type": "local",
+      "command": ["python", "C:/Users/theay/OneDrive/Desktop/Mev/mcp_server.py"],
+      "enabled": true
+    }
+  }
+}</pre>
+<label>AJAN TALİMATI</label>
+<pre id="a_ins">Dosya ararken once mev sfind kullan.
+conf >=0.85: devam et. <0.50: insana sor.</pre>
+<button class="copy" onclick="copyTxt('a_ins')">kopyala</button>
+<label>ÖRNEK AKIŞ</label>
+<div class="out" style="font-size:12px">1. sfind("checkout bottom sheet") → aday dosyalar<br>2. decide(icerik, {duzelt?}) → olasilik<br>3. dusukse sor, yuksekse uygula</div>
+</div>
+</main>
+<div id="log"></div>
+<footer>conf ≥0.85 devam · &lt;0.50 sor</footer>
+<details class="detay"><summary>Detaylı açıklama</summary><div class="detay-ic">
+<b>Karar Motoru</b> — yazıyı okuyup hazır seçeneklerden birini ve eminlik oranını verir; metin uydurmaz. <b>Dosya Bul</b> — Ryuko-AI içinde niyetle veya birebir arama yapar, satır numarasıyla gösterir. <b>Dil</b> — metnin dilini milisaniyede tespit eder. <b>Agent</b> — kod asistanını bağlama bilgisi ve kullanım talimatı. Sınırlar: genel sorularda %60-75 isabet, emin değilse insana sorar; 2000+ dosyada ilk tarama yavaş olabilir.
+</div></details>
+<script>
+function log(m){var e=document.getElementById('log');var d=document.createElement('div');d.innerHTML='<span class="t">'+new Date().toLocaleTimeString('tr-TR')+'</span>'+m;e.prepend(d);while(e.children.length>40)e.lastChild.remove();}
+function copyTxt(id){var t=document.getElementById(id).textContent;function ok(){log('kopyalandı');}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(ok);}else{var ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}ta.remove();ok();}}
+setInterval(function(){document.getElementById('clock').textContent=new Date().toLocaleString('tr-TR');},1000);
+async function post(u,b){var t=performance.now();var r=await fetch(u,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});var j=await r.json();j._ms=Math.round(performance.now()-t);return j;}
+function bars(probs){var h='';for(var k in probs){var p=probs[k];h+='<div>'+k+' <span class="amber">'+p+'</span><div class="bar"><i style="width:'+Math.round(p*100)+'%"></i></div></div>';}return h;}
+var PD=[['Release build iOS tarafında signing hatası veriyor, archive alınamıyor.','mobile: flutter dart ios android build gradle xcode\\nbackend: api firebase firestore crash\\ndesign: ui tema renk ekran'],
+['Firestore orders koleksiyonunda permission-denied, kurallar okumayı engelliyor.','mobile: flutter dart widget\\nbackend: api firebase firestore kural yetki\\ndesign: ui ekran'],
+['Karanlık temada sepet butonu kontrastı yetersiz, erişilebilirlik patladı.','mobile: flutter widget\\nbackend: api crash\\ndesign: ui tema renk kontrast erisilebilirlik']];
+function preD(i){document.getElementById('d_state').value=PD[i][0];document.getElementById('d_crit').value=PD[i][1];runDecide();}
+function preS(q){document.getElementById('s_q').value=q;runSfind();}
+function fmt(ms){if(ms==null||isNaN(ms))return '?';return ms>=1000?(ms/1000).toFixed(1)+'sn':Math.round(ms)+'ms';}
+async function runDecide(){
+ var t=document.getElementById('d_type').value, crit={}, bad='';
+ if(t==='score'){crit=['bekleyebilir','bu hafta','geliri engelliyor'];}
+ else{document.getElementById('d_crit').value.split('\\n').forEach(function(l){var i=l.indexOf(':');if(i>0)crit[l.slice(0,i).trim()]=l.slice(i+1).trim();});}
+ if(t==='noul'){crit={true:'iptal abonelik sonlandırma tehdidi',false:'soru istek bilgi'};}
+ var q={t0:{type:t,instructions:document.getElementById('d_state').value.slice(0,40),criteria:crit}};
+ try{var r=await post('/api/decide',{state:document.getElementById('d_state').value,questions:q});var a=r.answers.t0;var h='';
+ if(a.type==='choice'){h='<div class="pick">▸ '+a.choice+'</div>'+bars(a.probabilities);}
+ else if(a.type==='noul'){h='<div class="pick">▸ P(evet) = '+a.noul+'</div><div class="bar"><i style="width:'+Math.round(a.noul*100)+'%"></i></div>';}
+ else{h='<div class="pick">▸ skor = '+a.score+'</div>';}
+ h+='<div class="dim">güven '+a.confidence+' · <b class="ms">'+fmt(r.usage.latency_ms)+'</b>'+(a.distilled?' · distilled:'+a.distilled:'')+'</div>';
+ document.getElementById('d_out').innerHTML=h;log('decide → <span class="green">'+(a.choice||a.noul||a.score)+'</span> '+r.usage.latency_ms+'ms');
+ }catch(e){document.getElementById('d_out').innerHTML='<span class="red">hata: '+e+'</span>';}
+}
+async function runSfind(){
+ var q=document.getElementById('s_q').value, root=document.getElementById('s_root').value, mode=document.getElementById('s_mode').value;
+ try{var r=await post('/api/sfind',{query:q,root:root,top_k:8,mode:mode});var h='<div class="dim">'+r.scanned+' dosya · <b class="ms">'+fmt(r.ms)+'</b> · grep tahmini <b class="ms">~'+fmt(r.grep_tahmin_ms)+'</b></div>';if(!r.results.length)h+='<div class="amber">sonuç yok (dürüst: eşleşme bulunamadı)</div>';
+ r.results.forEach(function(x,i){var c=x.confidence||'';h+='<div class="row"><span class="amber">'+(i+1)+'</span> <span class="pick mono">'+x.path+'</span> <span class="dim">'+(x.probability||'')+' conf:'+c+'</span>';(x.snippet||[]).slice(0,2).forEach(function(s){h+='<div class="dim mono">L'+s.line+': '+String(s.text).slice(0,90)+'</div>';});h+='</div>';});
+ document.getElementById('s_out').innerHTML=h;log('sfind "'+q+'" → '+r.results.length+' sonuç '+r.ms+'ms');
+ }catch(e){document.getElementById('s_out').innerHTML='<span class="red">hata: '+e+'</span>';}
+}
+async function runRoute(){
+ var t=document.getElementById('r_t').value;
+ try{var r=await post('/api/route',{text:t});document.getElementById('r_out').innerHTML='<div class="pick">▸ '+r.model+'</div><div class="dim">'+r.reason+' · <b class="ms">'+fmt(r.route_ms)+'</b></div>';log('route → '+r.model);
+ }catch(e){document.getElementById('r_out').innerHTML='<span class="red">hata: '+e+'</span>';}
+}
+var activePanel=0;
+document.querySelectorAll('.panel').forEach(function(p,idx){p.addEventListener('pointerdown',function(){document.querySelectorAll('.panel').forEach(function(q){q.classList.remove('active');});p.classList.add('active');activePanel=idx;});});
+document.querySelector('.panel').classList.add('active');
+document.addEventListener('keydown',function(e){if(e.ctrlKey&&e.key==='Enter'){if(activePanel===1)runSfind();else if(activePanel===2)runRoute();else runDecide();}});
+(function(){var e=document.getElementById('a_cfg');if(!e||!e.textContent)return;var t=e.textContent;e.innerHTML=t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"([^"]+)":/g,'<span style="color:#E8A07E">"$1"</span>:').replace(/: "([^"]*)"/g,': <span style="color:#FDF2ED">"$1"</span>').replace(/: (true|false|[0-9]+)/g,': <span style="color:#f4b183">$1</span>');})();
+fetch('/api/stats').then(function(r){return r.json();}).then(function(s){document.getElementById('st_out').innerHTML='<div class="dim">motor '+s.model+' · artifact '+s.artifact_kb+'KB · test '+s.tests+' · '+s.files+' dosya · decide '+s.decide_ms+'ms</div>';});
+</script></body></html>
+""".replace("__ROOT__", ROOT_DEFAULT)
+
+
+class H(BaseHTTPRequestHandler):
+    def log_message(self, *a):
+        pass
+
+    def _json(self, obj, code=200):
+        b = json.dumps(obj, ensure_ascii=False).encode("utf-8")
+        self.send_response(code)
+        self.send_header("Content-Type", "application/json; charset=utf-8")
+        self.send_header("Content-Length", str(len(b)))
+        self.end_headers()
+        self.wfile.write(b)
+
+    def do_GET(self):
+        if self.path in ("/", "/index.html"):
+            b = PAGE.encode("utf-8")
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Cache-Control", "no-store")
+            self.send_header("Content-Length", str(len(b)))
+            self.end_headers()
+            self.wfile.write(b)
+        elif self.path == "/api/stats":
+            import glob
+            files = [f for f in glob.glob(os.path.join(MEV, "*")) if os.path.isfile(f)]
+            akb = os.path.getsize(os.path.join(MEV, "distilled_tasks.json")) // 1024 \
+                if os.path.exists(os.path.join(MEV, "distilled_tasks.json")) else 0
+            t0 = time.perf_counter()
+            J.decide("x", "hiz", {"q": {"type": "choice", "instructions": "i",
+                                        "criteria": {"a": "x", "b": "y"}}})
+            dt = round((time.perf_counter() - t0) * 1000, 3)
+            self._json({"model": J.MODEL_ID, "artifact_kb": akb, "tests": "23/23",
+                        "files": len(files), "decide_ms": dt})
+        else:
+            self._json({"error": "yok"}, 404)
+
+    def do_POST(self):
+        n = int(self.headers.get("Content-Length", 0))
+        try:
+            body = json.loads(self.rfile.read(max(n, 0)) or b"{}")
+        except (ValueError, OSError):
+            self._json({"error": "bozuk json"}, 400)
+            return
+        try:
+            if self.path == "/api/decide":
+                if not isinstance(body, dict):
+                    raise ValueError("bad")
+                self._json(J.decide(body.get("model", J.MODEL_ID), body.get("state", ""),
+                                    body.get("questions", {})))
+            elif self.path == "/api/sfind":
+                if not isinstance(body, dict):
+                    raise ValueError("bad")
+                self._json(M.tool_sfind(body))
+            elif self.path == "/api/route":
+                if not isinstance(body, dict):
+                    raise ValueError("bad")
+                self._json(J.route(body.get("text", "")))
+            else:
+                self._json({"error": "yok"}, 404)
+        except (ValueError, TypeError, KeyError) as e:
+            self._json({"error": "gecersiz parametre"}, 422)
+        except Exception:
+            self._json({"error": "ic hata"}, 500)
+
+
+if __name__ == "__main__":
+    srv = HTTPServer((HOST, PORT), H)
+    threading.Timer(1.0, lambda: webbrowser.open(f"http://{HOST}:{PORT}")).start()
+    print(f"kokpit: http://{HOST}:{PORT} (kapatmak icin Ctrl+C)")
+    try:
+        srv.serve_forever()
+    except KeyboardInterrupt:
+        pass
