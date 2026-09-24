@@ -12,6 +12,8 @@
 A small offline decision engine and file finder. It generates no text and
 makes no guesses; it returns one of the given options with a confidence score.
 
+> Türkçe sürüm: [mev-tr](https://github.com/theayzek01/mev-tr)
+
 ![MEV demo](assets/demo.svg?v=2)
 
 </div>
@@ -218,7 +220,6 @@ Mev/
 ├── distilled_tasks.json   # distilled weights (79KB)
 ├── test_all.py            # 23 checks
 ├── acceptance.py          # ~308-file acceptance run (300 + 8 pinned, 5 sfind queries)
-├── acceptance.py          # 300-file acceptance run
 ├── bench_repo.py          # synthetic repository measurement
 ├── kur.ps1 / install.sh   # one-command setup
 ├── assets/                # logo, diagrams, demo
