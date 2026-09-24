@@ -18,29 +18,57 @@ makes no guesses; it returns one of the given options with a confidence score.
 
 ## Contents
 
+- [Quickstart](#quickstart)
+- [Benchmarks](#benchmarks)
 - [Overview](#overview)
 - [Architecture](#architecture)
-- [Quickstart](#quickstart)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Tool Reference](#tool-reference)
 - [Configuration](#configuration)
-- [Benchmarks](#benchmarks)
 - [Comparison](#comparison)
 - [Project Structure](#project-structure)
 - [Limitations](#limitations)
 - [License](#license)
+
+## Quickstart
+
+```powershell
+powershell -ExecutionPolicy Bypass -File kur.ps1
+python dashboard.py
+# http://127.0.0.1:47921
+```
+
+Thirty seconds later: four panes (decision, file search, language, agent),
+running offline.
+
+## Benchmarks
+
+Measured on our own machine; every row reproducible:
+
+| Experiment | Result | Reproduce with |
+|---|---|---|
+| Automated tests | 23/23 pass | `python test_all.py` |
+| 308-file repository, 5 questions | 5/5 first-rank hits | `demo_accept.py` flow |
+| Single decision latency | ~0.14ms | `python mev.py bench` |
+| 490-file real project, warm search | 30-130ms | dashboard, `sfind` |
+| Turkish intent → English code | grep finds 0, MEV finds the file | dashboard, `sfind` |
 
 ## Overview
 
 MEV does two things, both on this machine, without external services:
 
 1. **Decides** (`decide`). Reads a text and states which team or label it
-   belongs to, with a probability. Example: "double charge on my invoice" →
-   `billing`, confidence 0.93.
-2. **Finds files** (`sfind`). Searches a large repository by intent sentence or
-   by literal string. Example: "where is the refund flow?" → ranked files.
-3. A helper (`route`) detects the language of a text in under a millisecond.
+   belongs to, with a probability.
+
+   Example: "double charge on my invoice" → `billing`, confidence 0.93.
+
+2. **Finds files** (`sfind`). Searches a large repository by intent sentence
+   or by literal string.
+
+   Example: "where is the refund flow?" → ranked files.
+
+A helper (`route`) detects the language of a text in under a millisecond.
 
 Everything is written with the Python standard library. There is nothing
 to install.
@@ -54,24 +82,18 @@ to install.
 </div>
 
 The flow is one-directional: state and repository go in, a typed decision
-comes out, and code acts on it past a threshold. There is no model weight file;
-the small table in `distilled_tasks.json` (79KB) was distilled from a teacher
-model.
+comes out, and code acts on it past a threshold.
 
-## Quickstart
-
-```powershell
-powershell -ExecutionPolicy Bypass -File kur.ps1
-python dashboard.py
-# http://127.0.0.1:47921
-```
+There is no model weight file; the small table in `distilled_tasks.json`
+(79KB) was distilled from a teacher model.
 
 ## Installation
 
-`kur.ps1` (Windows) or `install.sh` (macOS/Linux) performs three steps: it runs
-the test suite, copies the skill file to the locations agents read
-(`.config/opencode/skills`, `.claude/skills`, `.agents/skills`), and prints
-the MCP registration block.
+`kur.ps1` (Windows) or `install.sh` (macOS/Linux) performs three steps:
+
+1. Runs the test suite.
+2. Copies the skill file to the locations agents read.
+3. Prints the MCP registration block.
 
 **Mandatory last step:** close and reopen the IDE. MCP servers and skills load
 at startup; they are invisible without a restart. This applies to Cursor,
@@ -109,8 +131,10 @@ The install script writes all three.
 ## Usage
 
 **Cockpit.** `python dashboard.py` opens a four-pane browser panel: decision,
-file search, language detection, and agent connection details. Port 47921 was
-chosen deliberately; it does not collide with common development ports.
+file search, language detection, and agent connection details.
+
+Port 47921 was chosen deliberately; it does not collide with common
+development ports.
 
 **Command line.**
 
@@ -132,30 +156,24 @@ python bench_repo.py --sizes 100 500 2000  # synthetic repository measurement
 | `sfind` | `query`, `root`, `top_k`, `mode`, `use_regex`, `case_sensitive`, `context`, `include`, `index` | ranked files + snippets + confidence + grep estimate |
 | `route` | `text` | language/model + reason + latency |
 
-Application rule: proceed automatically at confidence 0.85 and above, ask a
-human below 0.50. Try `sfind` by intent (`semantic`) first; fall back to
-literal (`exact`) when it returns empty. `exact` never replaces `semantic`.
+Application rule:
+
+- Confidence 0.85 and above → proceed automatically.
+- Below 0.50 → ask a human.
+
+Try `sfind` by intent (`semantic`) first; fall back to literal (`exact`)
+when it returns empty. `exact` never replaces `semantic`.
 
 ## Configuration
 
 - `MAX_FILES=4000`, `BUDGET_MS=1500`: scan ceilings. On breach the result is
   cut and `timed_out:true` is returned; the program does not crash.
+
 - `index:true`: enables the `.mevidx` cache; repeat searches get faster.
   The cache file is not committed (`.gitignore` ships with the repo).
+
 - Confidence thresholds live on the client; the engine returns raw
   probabilities.
-
-## Benchmarks
-
-Measured on our own machine; reproducible with the listed commands:
-
-| Experiment | Result |
-|---|---|
-| Automated tests | 23/23 pass |
-| 308-file repository, 5 questions | 5/5 first-rank hits |
-| Single decision latency | ~0.14ms |
-| 490-file real project, warm search | 30-130ms |
-| Turkish intent → English code | grep finds 0, MEV finds the file |
 
 ## Comparison
 
