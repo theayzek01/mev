@@ -180,6 +180,12 @@ when it returns empty. `exact` never replaces `semantic`.
 Our own measurements and published documents. No claim in the first column;
 only measurements.
 
+<div align="center">
+
+![MEV comparison](assets/compare.svg)
+
+</div>
+
 | Dimension | MEV | Jev (TypeSafe, hosted API) | Laya (open source) | Graft | ripgrep |
 |---|---|---|---|---|---|
 | Purpose | typed decisions + intent file search | typed decision API | typed decision model | repository meaning map | literal string search |
