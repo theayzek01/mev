@@ -21,10 +21,10 @@ PAGE = """<!DOCTYPE html><html lang="tr"><head><meta charset="UTF-8">
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
 body{background:#1E0A08;color:#F3E6E1;font-family:"Segoe UI",system-ui,sans-serif;min-width:1280px;height:100vh;display:flex;flex-direction:column;overflow:hidden}
-header{display:flex;align-items:baseline;gap:14px;padding:14px 26px;background:#1E0A08}
-.logo{font-family:Georgia,'Times New Roman',serif;font-size:26px;font-weight:700;color:#F3E6E1;letter-spacing:1px}
-.logo em{font-style:italic;color:#E8A07E}
-.badge{margin-left:auto;font-size:11px;color:#B08D87;border:1px solid rgba(232,160,126,.25);border-radius:20px;padding:2px 10px}
+header{position:relative;display:flex;flex-direction:column;align-items:center;padding:12px 26px 10px;background:transparent}
+.logo{font-family:"Manrope","Segoe UI",system-ui,sans-serif;font-size:30px;font-weight:800;letter-spacing:12px;text-indent:12px;color:#F3E6E1}
+.logo em{font-style:normal;color:#E8A07E}
+.badge{font-size:11px;color:#B08D87;border:1px solid rgba(232,160,126,.25);border-radius:20px;padding:2px 10px}
 #clock{color:#B08D87;font-size:12px}
 main{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;padding:14px 26px;flex:1;min-height:0;background:#1E0A08}
 .panel{position:relative;background:#2A1210;border:1px solid rgba(232,160,126,.12);border-radius:14px;padding:18px;display:flex;flex-direction:column;min-height:0;overflow:hidden}
@@ -54,7 +54,8 @@ kbd{font-family:inherit;font-size:11px;background:rgba(0,0,0,.25);border:1px sol
 #log{background:#241012;height:110px;flex-shrink:0;overflow:auto;padding:10px 26px;font-size:12px;color:#B08D87;font-family:"Cascadia Code",Consolas,monospace}
 #log .t{color:#5c3a36;margin-right:8px}
 footer{padding:6px 26px;font-size:11px;color:#5c3a36;flex-shrink:0;background:#1E0A08}
-.tag{font-size:12px;color:#B08D87}
+.tag{font-size:12px;color:#B08D87;margin-top:2px}
+.right{position:absolute;right:26px;top:50%;transform:translateY(-50%);display:flex;gap:10px;align-items:center}
 ::-webkit-scrollbar{width:10px;height:10px}
 ::-webkit-scrollbar-thumb{background:rgba(232,160,126,.25);border-radius:6px}
 ::-webkit-scrollbar-track{background:transparent}
@@ -70,30 +71,30 @@ pre{background:#241012;border:1px solid rgba(232,160,126,.12);border-radius:8px;
 .tabbar button{margin:0 0 0 auto;padding:3px 7px;border:none;display:flex}
 .tabbar button:hover{border:none;color:#E8A07E}
 </style></head><body>
-<header><div class="logo">ME<em>V</em></div><div class="tag">Yazıyı doğru birime dağıtır, dosyayı bulur.</div><div class="badge">v1.0</div><div id="clock"></div></header>
+<header><div class="logo">ME<em>V</em></div><div class="tag">Routes text to the right owner, finds the file.</div><div class="right"><div class="badge">v1.0</div><div id="clock"></div></div></header>
 <main>
-<div class="panel"><span class="num">01</span><h2>Karar Motoru</h2><div class="sub">iOS signing ve derleme kurallarını doğrula.</div>
-<label>DURUM (state)</label><textarea id="d_state" rows="3">Release build iOS tarafında signing hatası veriyor, archive alınamıyor.</textarea>
-<label>SORU TİPİ</label><select id="d_type"><option value="choice">choice — seçenekten biri</option><option value="noul">noul — evet/hayır olasılığı</option><option value="score">score — dereceli skala</option></select>
-<label>SEÇENEKLER (etiket: açıklama, satır başı)</label><textarea id="d_crit" rows="4">mobile: flutter dart ios android build gradle xcode
-backend: api firebase firestore crash kural
-design: ui tema renk ekran kontrast</textarea>
-<button class="act" onclick="runDecide()">Çalıştır <kbd>&#8963;&#9166;</kbd></button>
+<div class="panel"><span class="num">01</span><h2>Decision Engine</h2><div class="sub">Verify iOS signing and build rules.</div>
+<label>STATUS (state)</label><textarea id="d_state" rows="3">Release build fails iOS signing, no archive produced.</textarea>
+<label>QUESTION TYPE</label><select id="d_type"><option value="choice">choice — one of the options</option><option value="noul">noul — yes/no probability</option><option value="score">score — graded scale</option></select>
+<label>OPTIONS (label: description, one per line)</label><textarea id="d_crit" rows="4">mobile: flutter dart ios android build gradle xcode
+backend: api firebase firestore crash rule
+design: ui theme color screen contrast</textarea>
+<button class="act" onclick="runDecide()">Run <kbd>&#8963;&#9166;</kbd></button>
 <div><button class="preset" onclick="preD(0)">ios build</button><button class="preset" onclick="preD(1)">firestore</button><button class="preset" onclick="preD(2)">tema</button></div>
-<div class="out" id="d_out"><span class="dim">hazır.</span></div></div>
-<div class="panel"><span class="num">02</span><h2>Dosya Bul</h2><div class="sub">Büyük Flutter reposunda niyetle ara.</div>
-<label>SORGU</label><input type="text" id="s_q" value="checkout bottom sheet">
-<label>KÖK</label><input type="text" id="s_root" value="__ROOT__">
-<label>MOD</label><select id="s_mode"><option value="semantic">semantic — niyetle</option><option value="exact">exact — birebir</option></select>
-<button class="act" onclick="runSfind()">Tara <kbd>&#8963;&#9166;</kbd></button>
+<div class="out" id="d_out"><span class="dim">ready.</span></div></div>
+<div class="panel"><span class="num">02</span><h2>File Finder</h2><div class="sub">Intent search across a large Flutter repo.</div>
+<label>QUERY</label><input type="text" id="s_q" value="checkout bottom sheet">
+<label>ROOT</label><input type="text" id="s_root" value="__ROOT__">
+<label>MODE</label><select id="s_mode"><option value="semantic">semantic — by intent</option><option value="exact">exact — literal</option></select>
+<button class="act" onclick="runSfind()">Scan <kbd>&#8963;&#9166;</kbd></button>
 <div><button class="preset" onclick="preS('checkout bottom sheet')">checkout</button><button class="preset" onclick="preS('go_router redirect')">go_router</button><button class="preset" onclick="preS('riverpod provider')">riverpod</button></div>
-<div class="out" id="s_out"><span class="dim">hazır.</span></div></div>
-<div class="panel"><span class="num">03</span><h2>Dil</h2><div class="sub">Metnin dilini ve kanalını tespit et.</div>
-<label>METİN</label><input type="text" id="r_t" value="fatura iade istiyorum">
-<button class="act" onclick="runRoute()">Tespit Et <kbd>&#8963;&#9166;</kbd></button>
-<div class="out" id="r_out"><span class="dim">hazır.</span></div>
+<div class="out" id="s_out"><span class="dim">ready.</span></div></div>
+<div class="panel"><span class="num">03</span><h2>Language</h2><div class="sub">Detect text language and channel.</div>
+<label>TEXT</label><input type="text" id="r_t" value="I was billed twice, please refund">
+<button class="act" onclick="runRoute()">Detect <kbd>&#8963;&#9166;</kbd></button>
+<div class="out" id="r_out"><span class="dim">ready.</span></div>
 <div class="out" id="st_out" style="padding-top:8px"><span class="dim">sistem yükleniyor…</span></div></div>
-<div class="panel"><span class="num">04</span><h2>Agent</h2><div class="sub">Kodlamada kullanım: bağlantı ve talimat.</div>
+<div class="panel"><span class="num">04</span><h2>Agent</h2><div class="sub">Coding use: connection and instructions.</div>
 <div class="tabbar"><span class="file">opencode.json</span><button onclick="copyTxt('a_cfg')" title="Kopyala"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
 <pre id="a_cfg">{
   "mcp": {
@@ -104,18 +105,18 @@ design: ui tema renk ekran kontrast</textarea>
     }
   }
 }</pre>
-<label>AJAN TALİMATI</label>
-<pre id="a_ins">Dosya ararken once mev sfind kullan.
-conf >=0.85: devam et. <0.50: insana sor.</pre>
-<button class="copy" onclick="copyTxt('a_ins')">kopyala</button>
-<label>ÖRNEK AKIŞ</label>
-<div class="out" style="font-size:12px">1. sfind("checkout bottom sheet") → aday dosyalar<br>2. decide(icerik, {duzelt?}) → olasilik<br>3. dusukse sor, yuksekse uygula</div>
+<label>AGENT INSTRUCTIONS</label>
+<pre id="a_ins">Use mev sfind to find files first.
+conf >=0.85: proceed. <0.50: ask a human.</pre>
+<button class="copy" onclick="copyTxt('a_ins')">copy</button>
+<label>EXAMPLE FLOW</label>
+<div class="out" style="font-size:12px">1. sfind("checkout bottom sheet") → candidate files<br>2. decide(content, {fix?}) → probability<br>3. low: ask, high: apply</div>
 </div>
 </main>
 <div id="log"></div>
-<footer>conf ≥0.85 devam · &lt;0.50 sor</footer>
-<details class="detay"><summary>Detaylı açıklama</summary><div class="detay-ic">
-<b>Karar Motoru</b> — yazıyı okuyup hazır seçeneklerden birini ve eminlik oranını verir; metin uydurmaz. <b>Dosya Bul</b> — Ryuko-AI içinde niyetle veya birebir arama yapar, satır numarasıyla gösterir. <b>Dil</b> — metnin dilini milisaniyede tespit eder. <b>Agent</b> — kod asistanını bağlama bilgisi ve kullanım talimatı. Sınırlar: genel sorularda %60-75 isabet, emin değilse insana sorar; 2000+ dosyada ilk tarama yavaş olabilir.
+<footer>conf ≥0.85 proceed · &lt;0.50 ask</footer>
+<details class="detay"><summary>Details</summary><div class="detay-ic">
+<b>Decision Engine</b> — reads text and returns one of the given options with a confidence score; never invents text. <b>File Finder</b> — searches by intent or literally, shows line numbers. <b>Language</b> — detects language in milliseconds. <b>Agent</b> — connection info and usage instructions for coding assistants. Limits: ~60-75% on general questions, asks a human when unsure; first scan can be slow on 2000+ files.
 </div></details>
 <script>
 function log(m){var e=document.getElementById('log');var d=document.createElement('div');d.innerHTML='<span class="t">'+new Date().toLocaleTimeString('tr-TR')+'</span>'+m;e.prepend(d);while(e.children.length>40)e.lastChild.remove();}

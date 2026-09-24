@@ -1,5 +1,7 @@
 # MEV
 
+**M**inimal **E**valuation **V**erdicts.
+
 ![MEV](assets/logo.svg)
 
 [![Lisans: MIT](https://img.shields.io/badge/Lisans-MIT-blue.svg)](LICENSE)

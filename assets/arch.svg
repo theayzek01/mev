@@ -1,23 +1,36 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="760" height="240" viewBox="0 0 760 240" font-family="'Segoe UI', system-ui, sans-serif">
-  <rect x="0" y="0" width="760" height="240" rx="12" fill="#1E0A08"/>
+  <rect x="0" y="0" width="760" height="240" rx="12" fill="#000000"/>
+  <rect x="0" y="0" width="760" height="240" rx="12" fill="none" stroke="#E8A07E" stroke-opacity="0.3"/>
   <g font-size="15" font-weight="600">
-    <rect x="20" y="60" width="180" height="120" rx="10" fill="#2A1210" stroke="#E8A07E" stroke-opacity="0.3"/>
-    <text x="110" y="92" text-anchor="middle" fill="#E8A07E">GİRDİ</text>
-    <text x="110" y="118" text-anchor="middle" font-size="13" font-weight="400" fill="#F3E6E1">bilet / repo</text>
-    <text x="110" y="140" text-anchor="middle" font-size="13" font-weight="400" fill="#B08D87">metin + dosyalar</text>
-    <rect x="290" y="60" width="180" height="120" rx="10" fill="#2A1210" stroke="#E8A07E" stroke-opacity="0.3"/>
+    <rect x="20" y="60" width="180" height="120" rx="10" fill="#0d0d0d" stroke="#E8A07E" stroke-opacity="0.35">
+      <animate attributeName="stroke-opacity" values="0.35;0.9;0.35" dur="3s" repeatCount="indefinite"/>
+    </rect>
+    <text x="110" y="92" text-anchor="middle" fill="#E8A07E">INPUT</text>
+    <text x="110" y="118" text-anchor="middle" font-size="13" font-weight="400" fill="#F3E6E1">ticket / repo</text>
+    <text x="110" y="140" text-anchor="middle" font-size="13" font-weight="400" fill="#B08D87">text + files</text>
+    <rect x="290" y="60" width="180" height="120" rx="10" fill="#0d0d0d" stroke="#E8A07E" stroke-opacity="0.35">
+      <animate attributeName="stroke-opacity" values="0.35;0.9;0.35" begin="1s" dur="3s" repeatCount="indefinite"/>
+    </rect>
     <text x="380" y="92" text-anchor="middle" fill="#E8A07E">MEV</text>
     <text x="380" y="118" text-anchor="middle" font-size="13" font-weight="400" fill="#F3E6E1">decide · sfind · route</text>
     <text x="380" y="140" text-anchor="middle" font-size="13" font-weight="400" fill="#B08D87">0.14ms · offline</text>
-    <rect x="560" y="60" width="180" height="120" rx="10" fill="#2A1210" stroke="#E8A07E" stroke-opacity="0.3"/>
-    <text x="650" y="92" text-anchor="middle" fill="#E8A07E">AKSİYON</text>
-    <text x="650" y="118" text-anchor="middle" font-size="13" font-weight="400" fill="#F3E6E1">yönlendir / bul</text>
+    <rect x="560" y="60" width="180" height="120" rx="10" fill="#0d0d0d" stroke="#E8A07E" stroke-opacity="0.35">
+      <animate attributeName="stroke-opacity" values="0.35;0.9;0.35" begin="2s" dur="3s" repeatCount="indefinite"/>
+    </rect>
+    <text x="650" y="92" text-anchor="middle" fill="#E8A07E">ACTION</text>
+    <text x="650" y="118" text-anchor="middle" font-size="13" font-weight="400" fill="#F3E6E1">route / locate</text>
     <text x="650" y="140" text-anchor="middle" font-size="13" font-weight="400" fill="#B08D87">conf ≥ 0.85</text>
   </g>
-  <g stroke="#E8A07E" stroke-width="2" fill="none">
-    <line x1="200" y1="120" x2="286" y2="120"/>
-    <polygon points="286,114 296,120 286,126" fill="#E8A07E" stroke="none"/>
-    <line x1="470" y1="120" x2="556" y2="120"/>
-    <polygon points="556,114 566,120 556,126" fill="#E8A07E" stroke="none"/>
+  <g stroke="#E8A07E" stroke-width="2" fill="none" stroke-dasharray="8 6">
+    <line x1="200" y1="120" x2="286" y2="120">
+      <animate attributeName="stroke-dashoffset" from="28" to="0" dur="1s" repeatCount="indefinite"/>
+    </line>
+    <line x1="470" y1="120" x2="556" y2="120">
+      <animate attributeName="stroke-dashoffset" from="28" to="0" dur="1s" repeatCount="indefinite"/>
+    </line>
+  </g>
+  <g fill="#E8A07E" stroke="none">
+    <polygon points="286,114 296,120 286,126"/>
+    <polygon points="556,114 566,120 556,126"/>
   </g>
 </svg>
