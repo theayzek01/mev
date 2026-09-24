@@ -12,7 +12,7 @@
 A small offline decision engine and file finder. It generates no text and
 makes no guesses; it returns one of the given options with a confidence score.
 
-![MEV demo](assets/demo.svg)
+![MEV demo](assets/demo.svg?v=2)
 
 </div>
 
@@ -179,7 +179,7 @@ Our own measurements and vendor documents. The first column lists dimensions onl
 
 <div align="center">
 
-![MEV comparison](assets/compare.svg)
+![MEV comparison](assets/compare.svg?v=2)
 
 </div>
 
