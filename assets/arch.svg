@@ -33,4 +33,10 @@
     <polygon points="286,114 296,120 286,126"/>
     <polygon points="556,114 566,120 556,126"/>
   </g>
+  <circle r="4" fill="#F3E6E1">
+    <animateMotion dur="2s" repeatCount="indefinite" path="M200,120 L286,120"/>
+  </circle>
+  <circle r="4" fill="#F3E6E1">
+    <animateMotion dur="2s" begin="1s" repeatCount="indefinite" path="M470,120 L556,120"/>
+  </circle>
 </svg>
