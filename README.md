@@ -1,8 +1,8 @@
-# MEV
-
-**M**inimal **E**valuation **V**erdicts.
+<div align="center">
 
 ![MEV](assets/logo.svg)
+
+**M**inimal **E**valuation **V**erdicts.
 
 [![Lisans: MIT](https://img.shields.io/badge/Lisans-MIT-blue.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-green.svg)](https://www.python.org/downloads/)
@@ -13,6 +13,8 @@
 tahmin yürütmez; hazır seçeneklerden birini ve ne kadar emin olduğunu söyler.
 
 ![MEV demosu](assets/demo.svg)
+
+</div>
 
 ## İçindekiler
 
@@ -45,7 +47,11 @@ Tamamı Python standart kütüphanesiyle yazılmıştır; kurulacak paket yoktur
 
 ## Mimari
 
+<div align="center">
+
 ![MEV mimarisi](assets/arch.svg)
+
+</div>
 
 Akış tek yönlüdür: durum ve repo girer, tip'li karar çıkar, eşik aşılırsa kod
 aksiyon alır. Model ağırlığı yoktur; `distilled_tasks.json` içindeki küçük

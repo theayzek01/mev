@@ -12,7 +12,7 @@
     <text x="28" y="66" font-size="12" fill="#B08D87">ACT 1 · DECIDE — text in, verdict out</text>
     <text x="28" y="96" font-size="15" fill="#F3E6E1">$ mev decide "double charge on my invoice"</text>
     <text x="28" y="126" font-size="14" fill="#B08D87">billing 0.93 · technical 0.04 · other 0.03</text>
-    <rect x="28" y="138" width="200" height="10" rx="5" fill="#241012"/>
+<rect x="28" y="138" width="200" height="10" rx="5" fill="#1a1a1a"/>
     <rect x="28" y="138" width="0" height="10" rx="5" fill="#7fb069">
       <animate attributeName="width" from="0" to="186" begin="1.6s" dur="0.9s" fill="freeze"/>
     </rect>
