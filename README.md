@@ -40,23 +40,22 @@ makes no guesses; it returns one of the given options with a confidence score.
 ```powershell
 powershell -ExecutionPolicy Bypass -File kur.ps1
 python dashboard.py
-# http://127.0.0.1:47921
 ```
 
-Thirty seconds later: four panes (decision, file search, language, agent),
-running offline.
+Opens `http://127.0.0.1:47921`: four panes (decision, file search,
+language, agent), running offline.
 
 ## Benchmarks
 
 Measured on our own machine; every row reproducible:
 
-| Experiment | Result | Reproduce with |
-|---|---|---|
-| Automated tests | 23/23 pass | `python test_all.py` |
-| 308-file repository, 5 questions | 5/5 first-rank hits | `demo_accept.py` flow |
-| Single decision latency | ~0.14ms | `python mev.py bench` |
-| 490-file real project, warm search | 30-130ms | dashboard, `sfind` |
-| Turkish intent → English code | grep finds 0, MEV finds the file | dashboard, `sfind` |
+| Experiment                | Result                  | Reproduce with              |
+|---------------------------|-------------------------|-----------------------------|
+| Automated tests           | 23/23 pass              | `python test_all.py`        |
+| 308-file repo, 5 queries  | 5/5 first-rank hits     | `python acceptance.py`      |
+| Single decision latency   | ~0.14ms                 | `python mev.py bench`       |
+| 490-file real project     | 30-130ms, warm          | dashboard, `sfind`          |
+| Turkish intent → English  | grep finds 0, MEV finds | dashboard, `sfind`          |
 
 ## Overview
 
@@ -154,11 +153,11 @@ python bench_repo.py --sizes 100 500 2000  # synthetic repository measurement
 
 ## Tool Reference
 
-| Tool | Input | Output |
-|---|---|---|
-| `decide` | `state`, `questions:{id:{type,instructions,criteria}}` | `choice`/`noul`/`score` + probability + confidence |
-| `sfind` | `query`, `root`, `top_k`, `mode`, `use_regex`, `case_sensitive`, `context`, `include`, `index` | ranked files + snippets + confidence + grep estimate |
-| `route` | `text` | language/model + reason + latency |
+| Tool     | Input                                                                          | Output                                              |
+|----------|--------------------------------------------------------------------------------|-----------------------------------------------------|
+| `decide` | `state`, `questions:{id:{type,instructions,criteria}}`                         | `choice`/`noul`/`score` + probability + confidence  |
+| `sfind`  | `query`, `root`, `top_k`, `mode`, `use_regex`, `case_sensitive`, `context`, `include`, `index` | ranked files + snippets + confidence + grep estimate |
+| `route`  | `text`                                                                         | language/model + reason + latency                   |
 
 Application rule:
 
@@ -218,9 +217,10 @@ Mev/
 ├── index_cache.py         # disk cache (.mevidx)
 ├── distilled_tasks.json   # distilled weights (79KB)
 ├── test_all.py            # 23 checks
+├── acceptance.py          # 300-file acceptance run
 ├── bench_repo.py          # synthetic repository measurement
 ├── kur.ps1 / install.sh   # one-command setup
-├── assets/                # logo, architecture, demo
+├── assets/                # logo, diagrams, demo
 └── .opencode/skills/mev/  # agent skill file
 ```
 
