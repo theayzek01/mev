@@ -146,6 +146,14 @@ python bench_repo.py --sizes 100 500 2000  # synthetic repository measurement
 
 **HTTP.** After `python mev.py serve --port 8013`, the server returns decisions at `POST /api/alpha/decisions` (a `POST /v1/systemone` path suffix is accepted for compatibility and returns the same payload).
 
+The loop agents run, visualized:
+
+<div align="center">
+
+![MEV agent loop](assets/agent.svg?v=1)
+
+</div>
+
 ## Tool Reference
 
 | Tool     | Input                                                                          | Output                                              |

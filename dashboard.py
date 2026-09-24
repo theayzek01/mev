@@ -33,6 +33,7 @@ main{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;padding
 .panel:nth-child(2){animation-delay:.08s}.panel:nth-child(3){animation-delay:.16s}.panel:nth-child(4){animation-delay:.24s}
 @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .num{position:absolute;top:6px;right:14px;font-family:Georgia,serif;font-size:44px;color:rgba(232,160,126,.10);line-height:1;pointer-events:none}
+.panel.active{box-shadow:0 0 0 1px rgba(232,160,126,.30),0 6px 28px rgba(0,0,0,.45)}
 .panel h2{font-family:Georgia,serif;font-size:21px;font-weight:700;color:#E8A07E;margin-bottom:2px}
 .sub{font-size:12px;color:#B08D87;margin-bottom:8px}
 label{font-size:11px;color:#B08D87;display:block;margin:10px 0 4px;letter-spacing:.5px}
