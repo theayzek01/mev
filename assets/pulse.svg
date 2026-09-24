@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="760" height="28" viewBox="0 0 760 28">
-  <line x1="0" y1="14" x2="760" y2="14" stroke="#E8A07E" stroke-opacity="0.18" stroke-width="1"/>
-  <circle r="3.5" fill="#E8A07E">
-    <animateMotion dur="4s" repeatCount="indefinite" path="M0,14 L760,14"/>
-  </circle>
-  <circle r="3.5" fill="#E8A07E" opacity="0.35">
-    <animateMotion dur="4s" begin="2s" repeatCount="indefinite" path="M0,14 L760,14"/>
-  </circle>
-</svg>

@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="340" viewBox="0 0 640 340" font-family="Consolas, 'Cascadia Code', monospace">
   <defs>
     <clipPath id="w1"><rect x="28" y="70" width="0" height="24"><animate attributeName="width" from="0" to="600" begin="0.4s" dur="1s" calcMode="spline" keySplines="0.4 0 0.2 1" fill="freeze"/></rect></clipPath>
-    <clipPath id="w2"><rect x="28" y="70" width="0" height="24"><animate attributeName="width" from="0" to="600" begin="5.4s" dur="1s" calcMode="spline" keySplines="0.4 0 0.2 1" fill="freeze"/></rect></clipPath>
+    <clipPath id="w2"><rect x="28" y="70" width="0" height="24"><animate attributeName="width" from="0" to="600" begin="4.4s" dur="1s" calcMode="spline" keySplines="0.4 0 0.2 1" fill="freeze"/></rect></clipPath>
   </defs>
   <rect x="0" y="0" width="640" height="340" rx="12" fill="#000000"/>
   <rect x="0" y="0" width="640" height="340" rx="12" fill="none" stroke="#E8A07E" stroke-opacity="0.3"/>
@@ -10,8 +10,9 @@
   <circle cx="68" cy="26" r="6" fill="#B08D87" opacity="0.85"/>
   <text x="96" y="31" font-size="14" fill="#B08D87">mev — how it works</text>
 
-  <g opacity="1">
-    <animate attributeName="opacity" values="1;1;0;0;1;1" keyTimes="0;0.276;0.309;0.954;0.987;1" dur="15.2s" repeatCount="indefinite"/>
+  <g opacity="0">
+    <animate attributeName="opacity" from="0" to="1" begin="0.3s" dur="0.4s" fill="freeze"/>
+    <animate attributeName="opacity" from="1" to="0" begin="4s" dur="0.4s" fill="freeze"/>
     <animateTransform attributeName="transform" type="translate" from="-10 0" to="0 0" begin="0.3s" dur="0.5s" calcMode="spline" keySplines="0.3 0 0.2 1" fill="freeze"/>
     <text x="28" y="58" font-size="12" fill="#B08D87">DECIDE — text in, verdict out</text>
     <g clip-path="url(#w1)">
@@ -23,32 +24,34 @@
       <animate attributeName="width" from="0" to="186" begin="1.9s" dur="1s" calcMode="spline" keySplines="0.3 0 0.2 1" fill="freeze"/>
     </rect>
     <text x="28" y="158" font-size="15" font-weight="bold" fill="#7fb069" opacity="0">billing · conf 0.93 · 0.14ms · nothing generated<animate attributeName="opacity" from="0" to="1" begin="3s" dur="0.4s" fill="freeze"/></text>
+    <text x="28" y="186" font-size="13" fill="#B08D87" opacity="0">no text is written, nothing is guessed<animate attributeName="opacity" from="0" to="1" begin="3.6s" dur="0.4s" fill="freeze"/></text>
   </g>
 
-  <g opacity="1">
-    <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.29;0.322;0.605;0.638;1" dur="15.2s" repeatCount="indefinite"/>
-    <animateTransform attributeName="transform" type="translate" from="-10 0" to="0 0" begin="5.2s" dur="0.5s" calcMode="spline" keySplines="0.3 0 0.2 1" fill="freeze"/>
+  <g opacity="0">
+    <animate attributeName="opacity" from="0" to="1" begin="4.2s" dur="0.4s" fill="freeze"/>
+    <animate attributeName="opacity" from="1" to="0" begin="7.8s" dur="0.4s" fill="freeze"/>
+    <animateTransform attributeName="transform" type="translate" from="-10 0" to="0 0" begin="4.2s" dur="0.5s" calcMode="spline" keySplines="0.3 0 0.2 1" fill="freeze"/>
     <text x="28" y="58" font-size="12" fill="#B08D87">SFIND — intent in, ranked files out</text>
     <g clip-path="url(#w2)">
       <text x="28" y="88" font-size="15" fill="#F3E6E1">$ mev sfind "where is the refund flow?"</text>
     </g>
-    <text x="28" y="114" font-size="14" fill="#B08D87" opacity="0">scanning 490 files<animate attributeName="opacity" from="0" to="1" begin="6.5s" dur="0.3s" fill="freeze"/><animate attributeName="opacity" from="1" to="0.35" begin="7.4s" dur="0.3s" fill="freeze"/></text>
+    <text x="28" y="114" font-size="14" fill="#B08D87" opacity="0">scanning 490 files<animate attributeName="opacity" from="0" to="1" begin="5.5s" dur="0.3s" fill="freeze"/><animate attributeName="opacity" from="1" to="0.35" begin="6.4s" dur="0.3s" fill="freeze"/></text>
     <g opacity="0">
-      <animate attributeName="opacity" from="0" to="1" begin="7.2s" dur="0.4s" fill="freeze"/>
-      <animateTransform attributeName="transform" type="translate" from="0 8" to="0 0" begin="7.2s" dur="0.4s" fill="freeze"/>
+      <animate attributeName="opacity" from="0" to="1" begin="6.2s" dur="0.4s" fill="freeze"/>
+      <animateTransform attributeName="transform" type="translate" from="0 8" to="0 0" begin="6.2s" dur="0.4s" fill="freeze"/>
       <text x="28" y="140" font-size="14" fill="#E8A07E">1 · refund_service.py · 0.81</text>
     </g>
     <g opacity="0">
-      <animate attributeName="opacity" from="0" to="1" begin="7.7s" dur="0.4s" fill="freeze"/>
-      <animateTransform attributeName="transform" type="translate" from="0 8" to="0 0" begin="7.7s" dur="0.4s" fill="freeze"/>
+      <animate attributeName="opacity" from="0" to="1" begin="6.7s" dur="0.4s" fill="freeze"/>
+      <animateTransform attributeName="transform" type="translate" from="0 8" to="0 0" begin="6.7s" dur="0.4s" fill="freeze"/>
       <text x="28" y="162" font-size="14" fill="#E8A07E">2 · invoice_gen.py · 0.12</text>
     </g>
-    <text x="28" y="186" font-size="14" fill="#B08D87" opacity="0">same intent in grep: 0 results<animate attributeName="opacity" from="0" to="1" begin="8.3s" dur="0.4s" fill="freeze"/></text>
+    <text x="28" y="186" font-size="14" fill="#B08D87" opacity="0">same intent in grep: 0 results<animate attributeName="opacity" from="0" to="1" begin="7.3s" dur="0.4s" fill="freeze"/></text>
   </g>
 
-  <g opacity="1">
-    <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.625;0.658;0.934;0.967;1" dur="15.2s" repeatCount="indefinite"/>
-    <animateTransform attributeName="transform" type="translate" from="-10 0" to="0 0" begin="10.4s" dur="0.5s" calcMode="spline" keySplines="0.3 0 0.2 1" fill="freeze"/>
+  <g opacity="0">
+    <animate attributeName="opacity" from="0" to="1" begin="8.2s" dur="0.4s" fill="freeze"/>
+    <animateTransform attributeName="transform" type="translate" from="-10 0" to="0 0" begin="8.2s" dur="0.5s" calcMode="spline" keySplines="0.3 0 0.2 1" fill="freeze"/>
     <text x="28" y="58" font-size="12" fill="#B08D87">GATE — confidence decides what happens</text>
     <rect x="40" y="100" width="560" height="6" rx="3" fill="#1a1a1a"/>
     <line x1="320" y1="92" x2="320" y2="114" stroke="#B08D87" stroke-width="1"/>
@@ -56,17 +59,24 @@
     <line x1="516" y1="92" x2="516" y2="114" stroke="#E8A07E" stroke-width="1"/>
     <text x="516" y="130" font-size="11" text-anchor="middle" fill="#E8A07E">0.85</text>
     <circle cx="40" cy="103" r="7" fill="#7fb069">
-      <animate attributeName="cx" from="40" to="561" begin="11s" dur="1.2s" calcMode="spline" keySplines="0.3 0 0.2 1" fill="freeze"/>
+      <animate attributeName="cx" from="40" to="561" begin="8.8s" dur="1.2s" calcMode="spline" keySplines="0.3 0 0.2 1" fill="freeze"/>
     </circle>
-    <text x="40" y="158" font-size="14" fill="#7fb069" opacity="0">0.93 — proceeds on its own<animate attributeName="opacity" from="0" to="1" begin="12.2s" dur="0.4s" fill="freeze"/></text>
+    <text x="40" y="158" font-size="14" fill="#7fb069" opacity="0">0.93 — proceeds on its own<animate attributeName="opacity" from="0" to="1" begin="10s" dur="0.4s" fill="freeze"/></text>
     <circle cx="40" cy="103" r="7" fill="#e07a6a" opacity="0">
-      <animate attributeName="opacity" from="0" to="1" begin="12.4s" dur="0.2s" fill="freeze"/>
-      <animate attributeName="cx" from="40" to="230" begin="12.6s" dur="0.9s" calcMode="spline" keySplines="0.3 0 0.2 1" fill="freeze"/>
+      <animate attributeName="opacity" from="0" to="1" begin="10.2s" dur="0.2s" fill="freeze"/>
+      <animate attributeName="cx" from="40" to="230" begin="10.4s" dur="0.9s" calcMode="spline" keySplines="0.3 0 0.2 1" fill="freeze"/>
     </circle>
-    <text x="40" y="182" font-size="14" fill="#e07a6a" opacity="0">0.34 — stops, asks a human<animate attributeName="opacity" from="0" to="1" begin="13.4s" dur="0.4s" fill="freeze"/></text>
+    <text x="40" y="182" font-size="14" fill="#e07a6a" opacity="0">0.34 — stops, asks a human<animate attributeName="opacity" from="0" to="1" begin="11.2s" dur="0.4s" fill="freeze"/></text>
+  </g>
+
+  <g opacity="0">
+    <animate attributeName="opacity" from="0" to="1" begin="12.2s" dur="0.5s" fill="freeze"/>
+    <text x="28" y="230" font-size="14" fill="#F3E6E1">decide 0.14ms · sfind 80ms · gate every answer</text>
+    <text x="28" y="256" font-size="14" fill="#E8A07E">fast where it decides, honest where it doubts.</text>
+    <text x="28" y="282" font-size="13" fill="#B08D87">cost on every row: $0, offline.</text>
   </g>
 
   <rect x="16" y="324" width="0" height="3" fill="#E8A07E" opacity="0.7">
-    <animate attributeName="width" from="0" to="608" begin="0s" dur="15.2s" repeatCount="indefinite"/>
+    <animate attributeName="width" from="0" to="608" begin="0s" dur="12.5s" fill="freeze"/>
   </rect>
 </svg>
