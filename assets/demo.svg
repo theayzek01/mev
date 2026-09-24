@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="300" viewBox="0 0 640 300" font-family="Consolas, 'Cascadia Code', monospace">
+  <rect x="0" y="0" width="640" height="300" rx="12" fill="#1E0A08"/>
+  <rect x="0" y="0" width="640" height="300" rx="12" fill="none" stroke="#E8A07E" stroke-opacity="0.25"/>
+  <circle cx="28" cy="26" r="6" fill="#E8A07E" opacity="0.8"/>
+  <circle cx="48" cy="26" r="6" fill="#7fb069" opacity="0.8"/>
+  <circle cx="68" cy="26" r="6" fill="#B08D87" opacity="0.8"/>
+  <text x="96" y="31" font-size="14" fill="#B08D87">mev — canlı</text>
+  <text x="28" y="70" font-size="15" fill="#B08D87" opacity="0">$ mev decide "faturamda çift çekim var"<animate attributeName="opacity" from="0" to="1" begin="0.4s" dur="0.3s" fill="freeze"/></text>
+  <text x="28" y="100" font-size="15" font-weight="bold" fill="#7fb069" opacity="0">→ billing 0.93 · 0.14ms<animate attributeName="opacity" from="0" to="1" begin="1.3s" dur="0.3s" fill="freeze"/></text>
+  <text x="28" y="140" font-size="15" fill="#B08D87" opacity="0">$ mev sfind "ödeme iade akışı nerede?"<animate attributeName="opacity" from="0" to="1" begin="2.2s" dur="0.3s" fill="freeze"/></text>
+  <text x="28" y="170" font-size="15" font-weight="bold" fill="#E8A07E" opacity="0">→ refund_service.py 0.81 · 122ms<animate attributeName="opacity" from="0" to="1" begin="3.1s" dur="0.3s" fill="freeze"/></text>
+  <text x="28" y="200" font-size="15" fill="#F3E6E1" opacity="0">→ invoice_gen.py 0.12 · grep: 0 sonuç<animate attributeName="opacity" from="0" to="1" begin="3.9s" dur="0.3s" fill="freeze"/></text>
+  <text x="28" y="240" font-size="15" fill="#E8A07E" opacity="0">$ █<animate attributeName="opacity" values="0;1;0" begin="4.5s" dur="1s" repeatCount="indefinite"/></text>
+</svg>
