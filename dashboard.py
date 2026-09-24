@@ -16,6 +16,7 @@ ROOT_DEFAULT = RYUKO if os.path.isdir(RYUKO) else MEV
 
 PAGE = """<!DOCTYPE html><html lang="tr"><head><meta charset="UTF-8">
 <title>MEV</title>
+<link rel="icon" type="image/svg+xml" href="/logo.svg">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
@@ -177,7 +178,20 @@ class H(BaseHTTPRequestHandler):
         self.wfile.write(b)
 
     def do_GET(self):
-        if self.path in ("/", "/index.html"):
+        if self.path == "/logo.svg":
+            try:
+                with open(os.path.join(MEV, "assets", "logo.svg"), "rb") as f:
+                    b = f.read()
+            except OSError:
+                self._json({"error": "yok"}, 404)
+                return
+            self.send_response(200)
+            self.send_header("Content-Type", "image/svg+xml")
+            self.send_header("Cache-Control", "max-age=86400")
+            self.send_header("Content-Length", str(len(b)))
+            self.end_headers()
+            self.wfile.write(b)
+        elif self.path in ("/", "/index.html"):
             b = PAGE.encode("utf-8")
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")
