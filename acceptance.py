@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """acceptance.py: 300 dosyalik sahte monorepo kabul testi (stdlib-only).
 Kullanim: python acceptance.py
-Beklenen: 6 sorguda first-rank isabet (5 sfind + 1 decide ornegi ciktida)."""
+Beklenen: 5 sorguda first-rank isabet (exit 0), degilse exit 1."""
 import os, random, sys, tempfile
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 try:
@@ -70,4 +70,6 @@ for q, mode, exp in queries:
     c = r["results"][0].get("confidence", "-") if r["results"] else "-"
     print(f"{'HIT ' if ok else 'MISS'} {q[:42]:42} -> {top1} conf={c} ms={r['ms']}")
 print(f"{hit}/{len(queries)} first-rank isabet")
+import shutil
+shutil.rmtree(root, ignore_errors=True)
 sys.exit(0 if hit == len(queries) else 1)

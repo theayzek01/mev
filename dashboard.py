@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """mev kokpit: tek dosya, tarayicida calisan kontrol paneli (stdlib-only).
-Kullanim: python dashboard.py  -> tarayici otomatik acilir (http://127.0.0.1:8080)
+Kullanim: python dashboard.py  -> tarayici otomatik acilir (http://127.0.0.1:47921)
 """
 import json, os, sys, time, webbrowser, threading
 from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -71,7 +71,7 @@ pre{background:#241012;border:1px solid rgba(232,160,126,.12);border-radius:8px;
 .tabbar button{margin:0 0 0 auto;padding:3px 7px;border:none;display:flex}
 .tabbar button:hover{border:none;color:#E8A07E}
 </style></head><body>
-<header><div class="logo">ME<em>V</em></div><div class="tag">Routes text to the right owner, finds the file.</div><div class="right"><div class="badge">v1.0</div><div id="clock"></div></div></header>
+<header><div class="logo">ME<em>V</em></div><div class="tag">Routes text to the right owner, finds the file.</div><div class="right"><div class="badge">v1.0.0</div><div id="clock"></div></div></header>
 <main>
 <div class="panel"><span class="num">01</span><h2>Decision Engine</h2><div class="sub">Verify iOS signing and build rules.</div>
 <label>STATUS (state)</label><textarea id="d_state" rows="3">Release build fails iOS signing, no archive produced.</textarea>

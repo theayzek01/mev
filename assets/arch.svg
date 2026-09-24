@@ -1,42 +1,42 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="760" height="240" viewBox="0 0 760 240" font-family="'Segoe UI', system-ui, sans-serif">
-  <rect x="0" y="0" width="760" height="240" rx="12" fill="#000000"/>
-  <rect x="0" y="0" width="760" height="240" rx="12" fill="none" stroke="#E8A07E" stroke-opacity="0.3"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="200" viewBox="0 0 760 200" font-family="'Segoe UI', system-ui, sans-serif">
+  <rect x="0" y="0" width="760" height="200" rx="12" fill="#000000"/>
+  <rect x="0" y="0" width="760" height="200" rx="12" fill="none" stroke="#E8A07E" stroke-opacity="0.3"/>
   <g font-size="15" font-weight="600">
-    <rect x="20" y="60" width="180" height="120" rx="10" fill="#0d0d0d" stroke="#E8A07E" stroke-opacity="0.35">
+    <rect x="20" y="40" width="180" height="120" rx="10" fill="#0d0d0d" stroke="#E8A07E" stroke-opacity="0.35">
       <animate attributeName="stroke-opacity" values="0.35;0.9;0.35" dur="3s" repeatCount="indefinite"/>
     </rect>
-    <text x="110" y="92" text-anchor="middle" fill="#E8A07E">INPUT</text>
-    <text x="110" y="118" text-anchor="middle" font-size="13" font-weight="400" fill="#F3E6E1">ticket / repo</text>
-    <text x="110" y="140" text-anchor="middle" font-size="13" font-weight="400" fill="#B08D87">text + files</text>
-    <rect x="290" y="60" width="180" height="120" rx="10" fill="#0d0d0d" stroke="#E8A07E" stroke-opacity="0.35">
+    <text x="110" y="72" text-anchor="middle" fill="#E8A07E">INPUT</text>
+    <text x="110" y="98" text-anchor="middle" font-size="13" font-weight="400" fill="#F3E6E1">ticket / repo</text>
+    <text x="110" y="120" text-anchor="middle" font-size="13" font-weight="400" fill="#B08D87">text + files</text>
+    <rect x="290" y="40" width="180" height="120" rx="10" fill="#0d0d0d" stroke="#E8A07E" stroke-opacity="0.35">
       <animate attributeName="stroke-opacity" values="0.35;0.9;0.35" begin="1s" dur="3s" repeatCount="indefinite"/>
     </rect>
-    <text x="380" y="92" text-anchor="middle" fill="#E8A07E">MEV</text>
-    <text x="380" y="118" text-anchor="middle" font-size="13" font-weight="400" fill="#F3E6E1">decide · sfind · route</text>
-    <text x="380" y="140" text-anchor="middle" font-size="13" font-weight="400" fill="#B08D87">0.14ms · offline</text>
-    <rect x="560" y="60" width="180" height="120" rx="10" fill="#0d0d0d" stroke="#E8A07E" stroke-opacity="0.35">
+    <text x="380" y="72" text-anchor="middle" fill="#E8A07E">MEV</text>
+    <text x="380" y="98" text-anchor="middle" font-size="13" font-weight="400" fill="#F3E6E1">decide · sfind · route</text>
+    <text x="380" y="120" text-anchor="middle" font-size="13" font-weight="400" fill="#B08D87">0.14ms · offline</text>
+    <rect x="560" y="40" width="180" height="120" rx="10" fill="#0d0d0d" stroke="#E8A07E" stroke-opacity="0.35">
       <animate attributeName="stroke-opacity" values="0.35;0.9;0.35" begin="2s" dur="3s" repeatCount="indefinite"/>
     </rect>
-    <text x="650" y="92" text-anchor="middle" fill="#E8A07E">ACTION</text>
-    <text x="650" y="118" text-anchor="middle" font-size="13" font-weight="400" fill="#F3E6E1">route / locate</text>
-    <text x="650" y="140" text-anchor="middle" font-size="13" font-weight="400" fill="#B08D87">conf ≥ 0.85</text>
+    <text x="650" y="72" text-anchor="middle" fill="#E8A07E">ACTION</text>
+    <text x="650" y="98" text-anchor="middle" font-size="13" font-weight="400" fill="#F3E6E1">route / locate</text>
+    <text x="650" y="120" text-anchor="middle" font-size="13" font-weight="400" fill="#B08D87">conf ≥ 0.85</text>
   </g>
   <g stroke="#E8A07E" stroke-width="2" fill="none" stroke-dasharray="8 6">
-    <line x1="200" y1="120" x2="286" y2="120">
+    <line x1="200" y1="100" x2="286" y2="100">
       <animate attributeName="stroke-dashoffset" from="28" to="0" dur="1s" repeatCount="indefinite"/>
     </line>
-    <line x1="470" y1="120" x2="556" y2="120">
+    <line x1="470" y1="100" x2="556" y2="100">
       <animate attributeName="stroke-dashoffset" from="28" to="0" dur="1s" repeatCount="indefinite"/>
     </line>
   </g>
   <g fill="#E8A07E" stroke="none">
-    <polygon points="286,114 296,120 286,126"/>
-    <polygon points="556,114 566,120 556,126"/>
+    <polygon points="286,94 296,100 286,106"/>
+    <polygon points="556,94 566,100 556,106"/>
   </g>
   <circle r="4" fill="#F3E6E1">
-    <animateMotion dur="2s" repeatCount="indefinite" path="M200,120 L286,120"/>
+    <animateMotion dur="2s" repeatCount="indefinite" path="M200,100 L286,100"/>
   </circle>
   <circle r="4" fill="#F3E6E1">
-    <animateMotion dur="2s" begin="1s" repeatCount="indefinite" path="M470,120 L556,120"/>
+    <animateMotion dur="2s" begin="1s" repeatCount="indefinite" path="M470,100 L556,100"/>
   </circle>
 </svg>

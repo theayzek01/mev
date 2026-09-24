@@ -157,6 +157,89 @@ def test_hiz():
     J.route("please refund invoice")
     assert (time.perf_counter() - t0) * 1000 < 100
 
+def test_sfind_index_acik_kapali():
+    with tempfile.TemporaryDirectory() as d:
+        open(os.path.join(d, "a.txt"), "w", encoding="utf-8").write("invoice refund billing payment process")
+        r1 = M.tool_sfind({"query": "fatura iade", "root": d, "mode": "semantic", "index": True})
+        assert r1["results"], r1
+        assert os.path.exists(os.path.join(d, ".mevidx")), "index:true .mevidx yazmali"
+    with tempfile.TemporaryDirectory() as d:
+        open(os.path.join(d, "a.txt"), "w", encoding="utf-8").write("invoice refund billing payment process")
+        r2 = M.tool_sfind({"query": "fatura iade", "root": d, "mode": "semantic", "index": False})
+        assert r2["results"], r2
+        assert not os.path.exists(os.path.join(d, ".mevidx")), "index:false yazmamali"
+
+def test_sfind_gitignore_eleme():
+    with tempfile.TemporaryDirectory() as d:
+        open(os.path.join(d, ".gitignore"), "w", encoding="utf-8").write("*.log\n")
+        open(os.path.join(d, "a.log"), "w", encoding="utf-8").write("NEEDLE_XYZ_999\n")
+        open(os.path.join(d, "b.txt"), "w", encoding="utf-8").write("NEEDLE_XYZ_999\n")
+        r = M.tool_sfind({"query": "NEEDLE_XYZ_999", "root": d, "mode": "exact"})
+        assert [x["path"] for x in r["results"]] == ["b.txt"], r
+
+def test_sfind_symlink_kacisi():
+    with tempfile.TemporaryDirectory() as d:
+        real = os.path.join(d, "real.txt")
+        open(real, "w", encoding="utf-8").write("SYMLINK_NEEDLE_123\n")
+        try:
+            os.symlink(real, os.path.join(d, "link.txt"))
+        except OSError:
+            return
+        r = M.tool_sfind({"query": "SYMLINK_NEEDLE_123", "root": d, "mode": "exact"})
+        assert [x["path"] for x in r["results"]] == ["real.txt"], r
+        assert r["scanned"] == 1, r
+
+def test_sfind_case_sensitive():
+    with tempfile.TemporaryDirectory() as d:
+        open(os.path.join(d, "a.txt"), "w", encoding="utf-8").write("Hello World\n")
+        assert len(M.tool_sfind({"query": "hello", "root": d, "mode": "exact"})["results"]) == 1
+        assert len(M.tool_sfind({"query": "hello", "root": d, "mode": "exact", "case_sensitive": True})["results"]) == 0
+        assert len(M.tool_sfind({"query": "Hello", "root": d, "mode": "exact", "case_sensitive": True})["results"]) == 1
+
+def test_sfind_context():
+    with tempfile.TemporaryDirectory() as d:
+        open(os.path.join(d, "a.txt"), "w", encoding="utf-8").write("l1\nl2\nHITLINE\nl4\nl5\n")
+        r = M.tool_sfind({"query": "HITLINE", "root": d, "mode": "exact", "context": 2})
+        sn = r["results"][0]["snippet"]
+        assert [s["line"] for s in sn] == [1, 2, 3, 4, 5], sn
+        assert sum(1 for s in sn if s["match"]) == 1 and sn[2]["match"] is True, sn
+        r0 = M.tool_sfind({"query": "HITLINE", "root": d, "mode": "exact", "context": 0})
+        assert len(r0["results"][0]["snippet"]) == 1, r0
+
+def test_sfind_best_effort():
+    with tempfile.TemporaryDirectory() as d:
+        open(os.path.join(d, "a.txt"), "w", encoding="utf-8").write("foo bar baz\n")
+        r = M.tool_sfind({"query": "zzz_qqq_xxx_nonexistent", "root": d, "mode": "semantic", "top_k": 3})
+        assert r.get("best_effort") is True, r
+        assert r["results"] and r["results"][0].get("best_effort") is True, r
+        assert r["results"][0]["confidence"] == 0.09, r
+
+def test_distilled_blend_acik_kapali():
+    q_hit = {"dept": {"type": "choice", "instructions": "x",
+             "criteria": {"billing": "invoices", "technical": "bugs", "account": "login", "sales": "sell", "other": "else"}}}
+    a1 = J.decide(J.MODEL_ID, "fatura iade", q_hit)["answers"]["dept"]
+    assert a1.get("distilled") == "triage", a1
+    q_miss = {"q": {"type": "choice", "instructions": "tek", "criteria": {"only": "tek secenek"}}}
+    a2 = J.decide(J.MODEL_ID, "tek secenek metni", q_miss)["answers"]["q"]
+    assert a2.get("distilled") is None and a2["choice"] == "only", a2
+
+def test_sfind_include():
+    with tempfile.TemporaryDirectory() as d:
+        open(os.path.join(d, "a.py"), "w", encoding="utf-8").write("FILTRE_ME_1\n")
+        open(os.path.join(d, "b.txt"), "w", encoding="utf-8").write("FILTRE_ME_1\n")
+        r = M.tool_sfind({"query": "FILTRE_ME_1", "root": d, "mode": "exact", "include": ".py"})
+        assert [x["path"] for x in r["results"]] == ["a.py"], r
+
+def test_mcp_tools_call_mutlu():
+    with tempfile.TemporaryDirectory() as d:
+        open(os.path.join(d, "a.txt"), "w", encoding="utf-8").write("hello needle\n")
+        r = _rpc({"jsonrpc": "2.0", "id": 10, "method": "tools/call", "params": {"name": "sfind", "arguments": {"query": "needle", "root": d, "mode": "exact"}}})
+        assert "result" in r and "content" in r["result"], r
+        r2 = _rpc({"jsonrpc": "2.0", "id": 11, "method": "tools/call", "params": {"name": "route", "arguments": {"text": "fatura iade"}}})
+        assert "result" in r2, r2
+        r3 = _rpc({"jsonrpc": "2.0", "id": 12, "method": "ping"})
+        assert r3["result"] == {}, r3
+
 TESTS = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
 if __name__ == "__main__":
     try:

@@ -16,7 +16,9 @@ def load(root):
     try:
         with open(_ip(root), "r", encoding="utf-8") as f:
             d = json.load(f)
-        if isinstance(d, dict) and isinstance(d.get("files"), dict):
+        if not isinstance(d, dict) or d.get("v") != VER:
+            return {}
+        if isinstance(d.get("files"), dict):
             return d["files"]
     except (OSError, ValueError):
         pass

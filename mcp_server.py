@@ -3,7 +3,7 @@
 Opencode: {"mcp":{"mev":{"type":"local","command":["python","C:/Users/theay/OneDrive/Desktop/Mev/mcp_server.py"],"enabled":true}}}
 Araclar: decide(state,questions) | sfind(query,root,top_k,mode,...) | route(text)
 """
-import json, os, re, stat, sys, time
+import json, fnmatch, os, re, stat, sys, time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import mev as J
@@ -173,11 +173,9 @@ def _load_ignore(d, base, rules):
                 continue
             rules.append((base, neg, True, rx, None))
         else:
-            import fnmatch
             rules.append((base, neg, False, None, s))
 
 def _ignored(rules, rel, is_dir):
-    import fnmatch
     bn = rel.rsplit("/", 1)[-1]
     hit = None
     for b, neg, is_rx, rx, pat in rules:
@@ -368,11 +366,21 @@ def _validate_sfind(a):
         inc = ""
     if not isinstance(inc, str) or len(inc) > 256 or "\x00" in inc:
         raise ValueError("include string olmali")
-    try:
-        context = int(a.get("context", 0))
-    except (TypeError, ValueError):
+    raw_ctx = a.get("context", 0)
+    if isinstance(raw_ctx, bool):
         raise ValueError("context 0-3 arasi olmali")
-    return q.strip(), max(1, min(25, tk)), mode.lower(), inc.lower(), max(0, min(3, context)), \
+    if isinstance(raw_ctx, float):
+        if not raw_ctx.is_integer():
+            raise ValueError("context 0-3 arasi olmali")
+        raw_ctx = int(raw_ctx)
+    if isinstance(raw_ctx, str):
+        if not raw_ctx.strip().isdigit():
+            raise ValueError("context 0-3 arasi olmali")
+        raw_ctx = int(raw_ctx.strip())
+    if not isinstance(raw_ctx, int) or not 0 <= raw_ctx <= 3:
+        raise ValueError("context 0-3 arasi olmali")
+    context = raw_ctx
+    return q.strip(), max(1, min(25, tk)), mode.lower(), inc.lower(), context, \
         bool(a.get("use_regex", False)), bool(a.get("case_sensitive", False)), bool(a.get("index", True))
 
 EXACT_PER_FILE = 10
@@ -562,6 +570,7 @@ def serve():
         pass
     for line in sys.stdin:
         if len(line) > MAX_LINE + 8192:
+            _err(None, -32700, "")
             continue
         line = line.strip()
         if not line:

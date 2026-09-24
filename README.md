@@ -23,6 +23,7 @@ makes no guesses; it returns one of the given options with a confidence score.
 - [Overview](#overview)
 - [Architecture](#architecture)
 - [Installation](#installation)
+  - [Per-client connection](#per-client-connection)
 - [Usage](#usage)
 - [Tool Reference](#tool-reference)
 - [Configuration](#configuration)
@@ -36,27 +37,27 @@ makes no guesses; it returns one of the given options with a confidence score.
 ```powershell
 powershell -ExecutionPolicy Bypass -File kur.ps1
 python dashboard.py
+# macOS/Linux: bash install.sh then python3 dashboard.py
 ```
 
-Opens `http://127.0.0.1:47921`: four panes (decision, file search,
-language, agent), running offline.
+It opens `http://127.0.0.1:47921` with four panes (decision, file search,
+language, agent) and runs offline.
 
 ## Benchmarks
 
-Measured on our own machine; every row reproducible:
+Measured on our own machine; every row is reproducible except where marked manual:
 
 | Experiment                | Result                  | Reproduce with              |
 |---------------------------|-------------------------|-----------------------------|
 | Automated tests           | 23/23 pass              | `python test_all.py`        |
-| 308-file repo, 5 queries  | 5/5 first-rank hits     | `python acceptance.py`      |
+| ~308-file repo, 5 queries | 5/5 first-rank hits     | `python acceptance.py`      |
 | Single decision latency   | ~0.14ms                 | `python mev.py bench`       |
-| 490-file real project     | 30-130ms, warm          | dashboard, `sfind`          |
-| Turkish intent → English  | grep finds 0, MEV finds | dashboard, `sfind`          |
+| 490-file real project     | 30-130ms, warm (manual) | dashboard, `sfind`          |
+| Turkish intent → English  | grep finds 0, MEV ranks target first (manual) | dashboard, `sfind` |
 
 ## Overview
 
 MEV does two things, both on this machine, without external services:
-
 1. **Decides** (`decide`). Reads a text and states which team or label it
    belongs to, with a probability.
 
@@ -81,7 +82,7 @@ to install.
 </div>
 
 The flow is one-directional: state and repository go in, a typed decision
-comes out, and code acts on it past a threshold.
+comes out, and code acts on it above a threshold.
 
 There is no model weight file; the small table in `distilled_tasks.json`
 (79KB) was distilled from a teacher model.
@@ -94,11 +95,11 @@ There is no model weight file; the small table in `distilled_tasks.json`
 2. Copies the skill file to the locations agents read.
 3. Prints the MCP registration block.
 
-**Mandatory last step:** close and reopen the IDE. MCP servers and skills load
+**Required last step:** close and reopen the IDE. MCP servers and skills load
 at startup; they are invisible without a restart. This applies to Cursor,
 Antigravity, Claude Code, terminals, and every other client.
 
-The only sentence your agent needs: **"install mev"**.
+The prompt your agent needs: **"install mev"**.
 
 ### Per-client connection
 
@@ -132,8 +133,7 @@ The install script writes all three.
 **Cockpit.** `python dashboard.py` opens a four-pane browser panel: decision,
 file search, language detection, and agent connection details.
 
-Port 47921 was chosen deliberately; it does not collide with common
-development ports.
+Port 47921 is used to avoid collision with common development ports.
 
 **Command line.**
 
@@ -144,8 +144,7 @@ python test_all.py        # 23 automated checks
 python bench_repo.py --sizes 100 500 2000  # synthetic repository measurement
 ```
 
-**HTTP.** After `python mev.py serve --port 8013`, the `POST
-/api/alpha/decisions` and `POST /v1/systemone` endpoints return decisions.
+**HTTP.** After `python mev.py serve --port 8013`, the server returns decisions at `POST /api/alpha/decisions` (a `POST /v1/systemone` path suffix is accepted for compatibility and returns the same payload).
 
 ## Tool Reference
 
@@ -157,11 +156,11 @@ python bench_repo.py --sizes 100 500 2000  # synthetic repository measurement
 
 Application rule:
 
-- Confidence 0.85 and above → proceed automatically.
+- A confidence of 0.85 and above → proceed automatically.
 - Below 0.50 → ask a human.
 
 Try `sfind` by intent (`semantic`) first; fall back to literal (`exact`)
-when it returns empty. `exact` never replaces `semantic`.
+when it returns empty. `exact` complements `semantic` for literal matches.
 
 ## Configuration
 
@@ -176,8 +175,7 @@ when it returns empty. `exact` never replaces `semantic`.
 
 ## Comparison
 
-Our own measurements and published documents. No claim in the first column;
-only measurements.
+Our own measurements and vendor documents. The first column lists dimensions only.
 
 <div align="center">
 
@@ -188,18 +186,18 @@ only measurements.
 | Dimension | MEV | Jev (TypeSafe, hosted API) | Laya (open source) | Graft | ripgrep |
 |---|---|---|---|---|---|
 | Purpose | typed decisions + intent file search | typed decision API | typed decision model | repository meaning map | literal string search |
-| Setup | none (stdlib) | API key | ~650MB weights + torch | CLI + (deep mode) LLM key | single binary |
-| Decision latency | ~0.14ms, CPU | network latency (100ms+) | ~33ms GPU / ~300ms CPU | graph read, ms range | — |
-| Intent search (490 files) | 30-130ms warm | — (no search) | — (no search) | fast via nodes | ~131ms but no understanding |
-| Turkish intent → English code | finds it | — | understands 100+ languages (better) | finds via semantic nodes | 0 results |
+| Setup | none (stdlib) | API key | ~650MB weights + torch (vendor docs) | CLI + (deep mode) LLM key | single binary |
+| Decision latency | ~0.14ms, CPU (our machine) | network latency (100ms+) | ~33ms GPU / ~300ms CPU (published) | graph read, ms range | — |
+| Intent search (490 files) | 30-130ms warm (manual) | — (no search) | — (no search) | fast via nodes | ~131ms but no understanding (manual) |
+| Turkish intent → English code | ranks target first | — | understands 100+ languages (better) | finds via semantic nodes | 0 results (manual) |
 | Cost | $0, offline | per-token fee | $0 (own GPU) | token fee in deep mode | $0 |
-| Accuracy (narrow tasks) | ~87% | high (closed box) | 45-77% (task dependent) | +12 pts (SWE-bench, own numbers) | 100% (if found) |
+| Accuracy (narrow tasks) | ~87% (our tasks) | high (closed box) | 45-77% (task dependent, published) | +12 pts (SWE-bench, vendor numbers) | 100% (if found) |
 | Weakness | 60-75% on general questions | closed, externally dependent | heavy setup, uneven zero-shot | needs setup + maintenance | no understanding, match only |
 
-ripgrep cannot be beaten at literal search and is not the target. MEV finds
+ripgrep is the fastest option for literal search and is not the target. MEV finds
 what grep cannot find and provides the decision layer offline without setup.
-It competes with Graft on nothing; they complement: the map from Graft,
-fast decisions from here.
+It does not compete with Graft; they complement each other: the map from Graft,
+fast decisions from MEV.
 
 ## Project Structure
 
@@ -211,6 +209,7 @@ Mev/
 ├── index_cache.py         # disk cache (.mevidx)
 ├── distilled_tasks.json   # distilled weights (79KB)
 ├── test_all.py            # 23 checks
+├── acceptance.py          # ~308-file acceptance run (300 + 8 pinned, 5 sfind queries)
 ├── acceptance.py          # 300-file acceptance run
 ├── bench_repo.py          # synthetic repository measurement
 ├── kur.ps1 / install.sh   # one-command setup
@@ -220,15 +219,15 @@ Mev/
 
 ## Limitations
 
-- No 100% accuracy. Expect ~87% on narrow tasks, 60-75% on general questions.
+- No 100% accuracy. Expect ~87% on narrow tasks, 60-75% on general questions (our tasks).
 - No chat, no code generation.
-- Vocabulary and weights are limited; on unknown ground it lowers confidence,
+- Vocabulary and weights are limited; on out-of-vocabulary inputs it lowers confidence,
   which is the correct behavior.
 - First scan can be slow past 2000 files; turn on `index:true`.
 
 ## License
 
-MIT. See `LICENSE` for details.
+Licensed under MIT. See `LICENSE` for details.
 
 ---
 

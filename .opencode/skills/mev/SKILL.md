@@ -37,9 +37,9 @@ açılışta yüklenir; yeniden başlatmadan görünmez. Kullanıcıya "mev kur"
 
 | Araç | Ne yapar | Kritik parametreler |
 |---|---|---|
-| `decide` | `state` + `questions` alır, `choice`/`noul`/`score` + olasılık döner | `state`, `questions:{id:{type,instructions,criteria}}` |
-| `sfind` | **grep yerine.** Niyetle (`semantic`) veya birebir (`exact`) dosya bulur | `query`, `root`, `top_k`, `mode`, `use_regex`, `case_sensitive`, `context`, `include` |
-| `route` | Dil/script tespiti, <0.1ms | `text` |
+| `decide` | `state` + `questions` alır, `choice`/`noul`/`score` + olasılık döner | `state`, `questions:{id:{type,instructions,criteria}}`, `model?` |
+| `sfind` | **grep yerine.** Niyetle (`semantic`) veya birebir (`exact`) dosya bulur | `query`, `root`, `top_k`, `mode`, `use_regex`, `case_sensitive`, `context`, `include`, `index` |
+| `route` | Dil/script tespiti, <0.5ms | `text` |
 
 ## Demir kurallar (grep'in yerini alma protokolü)
 
@@ -56,7 +56,7 @@ açılışta yüklenir; yeniden başlatmadan görünmez. Kullanıcıya "mev kur"
    `include` ile daralt (örn. `".dart"`).
 9. Sınıflandırma/yönlendirme kararı için `decide` kullan; cevabı asla serbest
    metin LLM'e tamamlama — `choice` dışına çıkılmaz.
-10. Türkçe sorgu İngilizce içeriği bulur (143 girdilik sözlük + damıtılmış ağırlıklar),
+10. Türkçe sorgu İngilizce içeriği bulur (180 girdilik sözlük + damıtılmış ağırlıklar),
     ama genel çeviri bekleme; bulamazsa düşük güven döner — bu doğru davranıştır.
 
 ## Örnek akışlar

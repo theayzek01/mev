@@ -18,13 +18,13 @@
     <g clip-path="url(#w1)">
       <text x="28" y="88" font-size="15" fill="#F3E6E1">$ mev decide "double charge on my invoice"</text>
     </g>
-    <text x="28" y="114" font-size="14" fill="#B08D87" opacity="0">billing 0.93 · technical 0.04 · other 0.03<animate attributeName="opacity" from="0" to="1" begin="1.7s" dur="0.4s" fill="freeze"/></text>
+    <text x="28" y="114" font-size="14" fill="#B08D87" opacity="1">billing 0.93 · technical 0.04 · other 0.03<animate attributeName="opacity" values="0;1" keyTimes="0;1" begin="1.7s" dur="0.4s" fill="freeze"/></text>
     <rect x="28" y="124" width="200" height="10" rx="5" fill="#1a1a1a"/>
     <rect x="28" y="124" width="0" height="10" rx="5" fill="#7fb069">
       <animate attributeName="width" from="0" to="186" begin="1.9s" dur="1s" calcMode="spline" keySplines="0.3 0 0.2 1" fill="freeze"/>
     </rect>
-    <text x="28" y="158" font-size="15" font-weight="bold" fill="#7fb069" opacity="0">billing · conf 0.93 · 0.14ms · nothing generated<animate attributeName="opacity" from="0" to="1" begin="3s" dur="0.4s" fill="freeze"/></text>
-    <text x="28" y="186" font-size="13" fill="#B08D87" opacity="0">no text is written, nothing is guessed<animate attributeName="opacity" from="0" to="1" begin="3.6s" dur="0.4s" fill="freeze"/></text>
+    <text x="28" y="158" font-size="15" font-weight="bold" fill="#7fb069" opacity="1">billing · conf 0.93 · 0.14ms · nothing generated<animate attributeName="opacity" values="0;1" keyTimes="0;1" begin="3s" dur="0.4s" fill="freeze"/></text>
+    <text x="28" y="186" font-size="13" fill="#B08D87" opacity="1">no text is written, nothing is guessed<animate attributeName="opacity" values="0;1" keyTimes="0;1" begin="3.6s" dur="0.4s" fill="freeze"/></text>
   </g>
 
   <g opacity="0">

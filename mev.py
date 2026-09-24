@@ -45,6 +45,8 @@ def _dist():
             with open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                    "distilled_tasks.json"), encoding="utf-8") as f:
                 _DIST = json.load(f)
+            if not isinstance(_DIST, dict) or _DIST.get("buckets", _DIST_BUCKETS) != _DIST_BUCKETS:
+                _DIST = {}
         except (OSError, ValueError):
             _DIST = {}
     return _DIST
@@ -172,6 +174,8 @@ def decide_one(qtype, st, sc, criteria, instructions="", temp=0.9):
     ins = " " + (instructions or "")
     if qtype == "choice":
         labels = list(criteria.keys())
+        if not labels:
+            raise ValueError("criteria bos olamaz")
         descs = [str(criteria[k]) + ins for k in labels]
         dtoks = [toks(d) for d in descs]
         dgrams = [chargrams(d) for d in descs]
@@ -221,6 +225,8 @@ def decide_one(qtype, st, sc, criteria, instructions="", temp=0.9):
                 "distilled": tid}
     if qtype == "score":
         levels = list(criteria)
+        if not levels:
+            raise ValueError("criteria bos olamaz")
         n = len(levels)
         ltoks = [toks(str(l) + ins) for l in levels]
         lgrams = [chargrams(str(l) + ins) for l in levels]
@@ -233,6 +239,8 @@ def decide_one(qtype, st, sc, criteria, instructions="", temp=0.9):
     raise ValueError("unknown type: " + str(qtype))
 
 def decide(model, state, questions):
+    if not isinstance(questions, dict):
+        raise ValueError("questions object olmali")
     t0 = time.perf_counter()
     s = textify(state)
     r = route(s)  # Laya Router fikri: önce dil/script, sonra skor
@@ -254,18 +262,34 @@ class H(BaseHTTPRequestHandler):
         self.send_header("Content-Length", str(len(b))); self.end_headers()
         self.wfile.write(b)
     def do_POST(self):
-        n = int(self.headers.get("Content-Length", 0))
+        if self.path.rstrip("/") not in ("/api/alpha/decisions", "/api/alpha/decisions/systemone",
+                                         "/v1/systemone", "/api/v1/systemone"):
+            self._send({"error": "not found"}, 404)
+            return
+        n = int(self.headers.get("Content-Length") or 0)
+        if n <= 0 or n > 1000000:
+            self._send({"error": "Content-Length 1..1000000 olmali"}, 400)
+            return
         try:
-            body = json.loads(self.rfile.read(n) or b"{}")
-            if self.path.endswith("/systemone"):
-                # TypeSafe SDK şekli: {model, state, questions} (bare id gelebilir)
-                pass
-            out = decide(body.get("model", MODEL_ID), body.get("state", ""), body.get("questions", {}))
+            raw = self.rfile.read(n)
+            try:
+                body = json.loads(raw)
+            except ValueError:
+                self._send({"error": "bozuk JSON"}, 400)
+                return
+            if not isinstance(body, dict):
+                self._send({"error": "body object olmali"}, 400)
+                return
+            try:
+                out = decide(body.get("model", MODEL_ID), body.get("state", ""), body.get("questions", {}))
+            except (ValueError, TypeError, KeyError) as e:
+                self._send({"error": str(e)[:200]}, 422)
+                return
             out["id"] = "local-" + str(int(time.time() * 1000))
             out["provider"] = "local"
             self._send(out)
         except Exception as e:
-            self._send({"error": str(e)}, 422)
+            self._send({"error": str(e)[:200]}, 500)
 
 def demo():
     qs = {"department": {"type": "choice", "instructions": "Which team should handle this?",

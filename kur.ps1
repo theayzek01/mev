@@ -9,9 +9,11 @@ Write-Host "Bulundu: $py (klasor: $MevDir)"
 
 Write-Host "`n[1/3] Dogrulama calistiriliyor..."
 & python "$MevDir\test_all.py" | Select-Object -Last 1
+if ($LASTEXITCODE -ne 0) { Write-Host "Testler basarisiz (exit $LASTEXITCODE). Durduruldu."; exit 1 }
 
 Write-Host "`n[2/3] Skill kopyalaniyor..."
 $SkillSrc = Join-Path $MevDir ".opencode\skills\mev"
+if (-not (Test-Path -LiteralPath "$SkillSrc\SKILL.md")) { Write-Host "SKILL.md bulunamadi: $SkillSrc"; exit 1 }
 $Targets = @(
   "$env:USERPROFILE\.config\opencode\skills\mev",
   "$env:USERPROFILE\.claude\skills\mev",
