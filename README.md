@@ -14,6 +14,10 @@ makes no guesses; it returns one of the given options with a confidence score.
 
 ![MEV demo](assets/demo.svg)
 
+<div align="center">
+
+![pulse](assets/pulse.svg)
+
 </div>
 
 ## Contents
@@ -183,6 +187,8 @@ only measurements.
 <div align="center">
 
 ![MEV comparison](assets/compare.svg)
+
+![pulse](assets/pulse.svg)
 
 </div>
 
